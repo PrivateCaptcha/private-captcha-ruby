@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - '**'
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    - '**/.*.yml'
+    - '.vscode/**'
+    tags-ignore:
+    - '*'
+  schedule:
+    # we want to verify our SDKs on a constant schedule
+    - cron: '0 0 * * *'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+        bundler-cache: true
+
+    - name: Run unit tests
+      run: bundle exec rake test
+      env:
+        PC_API_KEY: ${{ secrets.PC_API_KEY }}

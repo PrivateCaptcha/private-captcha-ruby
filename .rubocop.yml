@@ -1,0 +1,37 @@
+plugins:
+  - rubocop-minitest
+  - rubocop-rake
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 2.7
+
+# Disable metrics for test files
+Metrics/ClassLength:
+  Exclude:
+    - 'test/**/*'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'test/**/*'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'test/**/*'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'test/**/*'
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'test/**/*'
+
+# Allow longer parameter lists for data objects
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
+# Allow more assertions in test files for comprehensive testing
+Minitest/MultipleAssertions:
+  Exclude:
+    - 'test/**/*'
