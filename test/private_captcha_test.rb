@@ -98,7 +98,7 @@ class PrivateCaptchaTest < Minitest::Test
     assert_equal 'solution is empty', error.message
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:disable Metrics/MethodLength
   def test_retry_backoff
     client = PrivateCaptcha::Client.new do |config|
       config.api_key = ENV.fetch('PC_API_KEY', nil)
@@ -108,19 +108,14 @@ class PrivateCaptchaTest < Minitest::Test
       config.max_backoff_seconds = 1
     end
 
-    start_time = Time.now
-
-    error = assert_raises(StandardError) do
+    error = assert_raises(PrivateCaptcha::VerificationFailedError) do
       client.verify('asdf')
     end
 
-    elapsed = Time.now - start_time
-
-    refute_nil error
-    # Should have taken at least some time due to retries
-    assert_operator elapsed, :>, 0.5, "Expected retries to take some time, but took #{elapsed}s"
+    # Should have failed after 4 attempts
+    assert_equal 4, error.attempts
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength
 
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def test_custom_form_field

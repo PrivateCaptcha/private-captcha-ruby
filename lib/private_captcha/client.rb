@@ -63,13 +63,10 @@ module PrivateCaptcha
         "attempts=#{attempt} success=#{error.nil?}"
       end
 
-      response ||= VerifyOutput.new(
-        success: false,
-        code: VerifyOutput::VERIFY_CODES_COUNT,
-        attempt: attempt
-      )
-
-      raise error if error && !error.is_a?(HTTPError)
+      if error
+        @logger.error("Failed to verify solution after #{attempt} attempts")
+        raise VerificationFailedError.new("Failed to verify solution after #{attempt} attempts", attempt)
+      end
 
       response
     end
@@ -111,7 +108,7 @@ module PrivateCaptcha
         response = Net::HTTP.start(@endpoint.hostname, @endpoint.port, use_ssl: true) do |http|
           http.request(request)
         end
-      rescue IOError, Timeout::Error, SystemCallError => e
+      rescue SocketError, IOError, Timeout::Error, SystemCallError => e
         @logger.debug('Failed to send HTTP request') { "error=#{e.message}" }
         raise RetriableError, e
       end

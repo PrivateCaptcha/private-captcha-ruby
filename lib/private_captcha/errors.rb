@@ -37,4 +37,14 @@ module PrivateCaptcha
       super(error.message)
     end
   end
+
+  # VerificationFailedError is raised when verification fails after all retry attempts
+  class VerificationFailedError < Error
+    attr_reader :attempts
+
+    def initialize(message, attempts)
+      @attempts = attempts
+      super(message)
+    end
+  end
 end
