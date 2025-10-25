@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  tests:
+  lint-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,6 +35,9 @@ jobs:
       with:
         ruby-version: '3.3'
         bundler-cache: true
+
+    - name: Run linter
+      run: bundle exec rubocop
 
     - name: Run unit tests
       run: bundle exec rake test
