@@ -1,0 +1,41 @@
+name: Publish to RubyGems
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: RubyGems release
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'
+
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install
+
+    - name: Build gem
+      run: gem build private_captcha.gemspec
+
+    - name: Publish to RubyGems
+      env:
+        GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+      run: |
+        mkdir -p ~/.gem
+        echo ":rubygems_api_key: ${GEM_HOST_API_KEY}" > ~/.gem/credentials
+        chmod 0600 ~/.gem/credentials
+        gem push *.gem
+        rm ~/.gem/credentials
