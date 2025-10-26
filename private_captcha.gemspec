@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/PrivateCaptcha/private-captcha-ruby'
-  spec.metadata['rubygems_mfa_required'] = 'true'
+  # spec.metadata['rubygems_mfa_required'] = 'true'
   # spec.metadata["changelog_uri"] = "https://github.com/PrivateCaptcha/private-captcha-ruby/"
 
   # Specify which files should be added to the gem when it is released.
