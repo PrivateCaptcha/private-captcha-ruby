@@ -1,5 +1,7 @@
 # private-captcha-ruby
 
+![CI](https://github.com/PrivateCaptcha/private-captcha-ruby/actions/workflows/ci.yaml/badge.svg)
+
 Ruby client for server-side verification of Private Captcha solutions.
 
 ## Installation
