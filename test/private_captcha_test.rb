@@ -216,7 +216,7 @@ class PrivateCaptchaTest < Minitest::Test
       'timestamp' => '2024-01-01T00:00:00Z'
     }
 
-    output = PrivateCaptcha::VerifyOutput.from_json(json_data, request_id: 'test-123', attempt: 2)
+    output = PrivateCaptcha::VerifyOutput.from_json(json_data, trace_id: 'test-123', attempt: 2)
 
     assert output.success
     assert_equal 0, output.code
