@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module PrivateCaptcha
+  # Error is the base class for Private Captcha errors
   class Error < StandardError
     attr_reader :trace_id
 
