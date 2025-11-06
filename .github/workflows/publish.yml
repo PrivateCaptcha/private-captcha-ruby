@@ -19,7 +19,6 @@ jobs:
       contents: write
 
     steps:
-      # Set up
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
@@ -33,5 +32,7 @@ jobs:
       - name: Install dependencies
         run: bundle install
 
-      # Release
+      - name: Remove Gemfile.lock
+        run: rm -vf Gemfile.lock
+
       - uses: rubygems/release-gem@v1
