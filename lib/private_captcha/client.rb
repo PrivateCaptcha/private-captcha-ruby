@@ -118,7 +118,7 @@ module PrivateCaptcha
         trace_id = response['X-Trace-ID']
       rescue SocketError, IOError, Timeout::Error, SystemCallError => e
         @logger.debug('Failed to send HTTP request') { "error=#{e.message}" }
-        raise RetriableError.new(e)
+        raise RetriableError, e
       end
 
       @logger.debug('HTTP request finished') do
@@ -133,9 +133,9 @@ module PrivateCaptcha
         @logger.debug('Rate limited') do
           "retryAfter=#{retry_after} rateLimit=#{response['X-RateLimit-Limit']}"
         end
-        raise RetriableError.new(HTTPError.new(status_code, retry_after, trace_id: trace_id))
+        raise RetriableError, HTTPError.new(status_code, retry_after, trace_id: trace_id)
       when 500, 502, 503, 504, 408, 425
-        raise RetriableError.new(HTTPError.new(status_code, trace_id: trace_id))
+        raise RetriableError, HTTPError.new(status_code, trace_id: trace_id)
       when 300..599
         raise HTTPError.new(status_code, trace_id: trace_id)
       end
@@ -145,7 +145,7 @@ module PrivateCaptcha
         VerifyOutput.from_json(json_data, trace_id: trace_id)
       rescue JSON::ParserError => e
         @logger.debug('Failed to parse response') { "error=#{e.message}" }
-        raise RetriableError.new(e)
+        raise RetriableError, e
       end
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
