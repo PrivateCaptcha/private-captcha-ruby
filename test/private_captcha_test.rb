@@ -222,7 +222,7 @@ class PrivateCaptchaTest < Minitest::Test
     assert_equal 0, output.code
     assert_equal 'example.com', output.origin
     assert_equal '2024-01-01T00:00:00Z', output.timestamp
-    assert_equal 'test-123', output.request_id
+    assert_equal 'test-123', output.trace_id
     assert_equal 2, output.attempt
   end
   # rubocop:enable Metrics/MethodLength
