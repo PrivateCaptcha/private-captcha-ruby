@@ -30,8 +30,5 @@ jobs:
           bundler-cache: false
           ruby-version: '3.2'
 
-      - name: Install dependencies
-        run: bundle install
-
       # Release
       - uses: rubygems/release-gem@v1
