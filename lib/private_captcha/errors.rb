@@ -39,9 +39,13 @@ module PrivateCaptcha
   class RetriableError < Error
     attr_reader :original_error
 
-    def initialize(error, trace_id: nil)
+    def initialize(error)
       @original_error = error
-      super(error.message, trace_id: trace_id)
+      super(error.message)
+    end
+
+    def trace_id
+      @original_error.respond_to?(:trace_id) ? @original_error.trace_id : nil
     end
   end
 
