@@ -33,14 +33,14 @@ module PrivateCaptcha
     }.freeze
 
     attr_accessor :success, :code, :origin, :timestamp
-    attr_reader :request_id, :attempt
+    attr_reader :trace_id, :attempt
 
-    def initialize(success: false, code: VERIFY_NO_ERROR, origin: nil, timestamp: nil, request_id: nil, attempt: 0)
+    def initialize(success: false, code: VERIFY_NO_ERROR, origin: nil, timestamp: nil, trace_id: nil, attempt: 0)
       @success = success
       @code = code
       @origin = origin
       @timestamp = timestamp
-      @request_id = request_id
+      @trace_id = trace_id
       @attempt = attempt
     end
 
@@ -48,13 +48,13 @@ module PrivateCaptcha
       ERROR_MESSAGES.fetch(@code, 'error')
     end
 
-    def self.from_json(json_data, request_id: nil, attempt: 0)
+    def self.from_json(json_data, trace_id: nil, attempt: 0)
       new(
         success: json_data['success'],
         code: json_data['code'] || VERIFY_NO_ERROR,
         origin: json_data['origin'],
         timestamp: json_data['timestamp'],
-        request_id: request_id,
+        trace_id: trace_id,
         attempt: attempt
       )
     end

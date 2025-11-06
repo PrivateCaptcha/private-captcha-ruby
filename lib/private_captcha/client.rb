@@ -38,6 +38,7 @@ module PrivateCaptcha
       response = nil
       error = nil
       attempt = 0
+      trace_id = nil
 
       max_attempts.times do |i|
         attempt = i + 1
@@ -56,6 +57,7 @@ module PrivateCaptcha
           break
         rescue RetriableError => e
           error = e.original_error
+          trace_id = e.trace_id if e.trace_id
         end
       end
 
@@ -65,7 +67,7 @@ module PrivateCaptcha
 
       if error
         @logger.error("Failed to verify solution after #{attempt} attempts")
-        raise VerificationFailedError.new("Failed to verify solution after #{attempt} attempts", attempt)
+        raise VerificationFailedError.new("Failed to verify solution after #{attempt} attempts", attempt, trace_id: trace_id)
       end
 
       response
@@ -78,7 +80,7 @@ module PrivateCaptcha
 
       output = verify(solution)
 
-      raise Error, "captcha verification failed: #{output.error_message}" unless output.success
+      raise Error.new("captcha verification failed: #{output.error_message}", trace_id: output.trace_id) unless output.success
 
       output
     end
@@ -104,13 +106,15 @@ module PrivateCaptcha
       @logger.debug('Sending HTTP request') { "path=#{@endpoint.path} method=POST" }
 
       response = nil
+      trace_id = nil
       begin
         response = Net::HTTP.start(@endpoint.hostname, @endpoint.port, use_ssl: true) do |http|
           http.request(request)
         end
+        trace_id = response['X-Trace-ID']
       rescue SocketError, IOError, Timeout::Error, SystemCallError => e
         @logger.debug('Failed to send HTTP request') { "error=#{e.message}" }
-        raise RetriableError, e
+        raise RetriableError.new(e, trace_id: trace_id)
       end
 
       @logger.debug('HTTP request finished') do
@@ -118,7 +122,6 @@ module PrivateCaptcha
       end
 
       status_code = response.code.to_i
-      request_id = response['X-Trace-ID']
 
       case status_code
       when 429
@@ -126,19 +129,19 @@ module PrivateCaptcha
         @logger.debug('Rate limited') do
           "retryAfter=#{retry_after} rateLimit=#{response['X-RateLimit-Limit']}"
         end
-        raise RetriableError, HTTPError.new(status_code, retry_after)
+        raise RetriableError.new(HTTPError.new(status_code, retry_after, trace_id: trace_id), trace_id: trace_id)
       when 500, 502, 503, 504, 408, 425
-        raise RetriableError, HTTPError.new(status_code)
+        raise RetriableError.new(HTTPError.new(status_code, trace_id: trace_id), trace_id: trace_id)
       when 300..599
-        raise HTTPError, status_code
+        raise HTTPError.new(status_code, trace_id: trace_id)
       end
 
       begin
         json_data = JSON.parse(response.body)
-        VerifyOutput.from_json(json_data, request_id: request_id)
+        VerifyOutput.from_json(json_data, trace_id: trace_id)
       rescue JSON::ParserError => e
         @logger.debug('Failed to parse response') { "error=#{e.message}" }
-        raise RetriableError, e
+        raise RetriableError.new(e, trace_id: trace_id)
       end
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
