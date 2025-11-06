@@ -13,14 +13,14 @@ module PrivateCaptcha
   # EmptyAPIKeyError is raised when the API key is not provided or is empty
   class EmptyAPIKeyError < Error
     def initialize(msg = 'API key is empty', trace_id: nil)
-      super(msg, trace_id: trace_id)
+      super
     end
   end
 
   # EmptySolutionError is raised when the solution is not provided or is empty
   class EmptySolutionError < Error
     def initialize(msg = 'solution is empty', trace_id: nil)
-      super(msg, trace_id: trace_id)
+      super
     end
   end
 

@@ -67,7 +67,8 @@ module PrivateCaptcha
 
       if error
         @logger.error("Failed to verify solution after #{attempt} attempts")
-        raise VerificationFailedError.new("Failed to verify solution after #{attempt} attempts", attempt, trace_id: trace_id)
+        raise VerificationFailedError.new("Failed to verify solution after #{attempt} attempts", attempt,
+                                          trace_id: trace_id)
       end
 
       response
@@ -80,7 +81,10 @@ module PrivateCaptcha
 
       output = verify(solution)
 
-      raise Error.new("captcha verification failed: #{output.error_message}", trace_id: output.trace_id) unless output.success
+      unless output.success
+        raise Error.new("captcha verification failed: #{output.error_message}",
+                        trace_id: output.trace_id)
+      end
 
       output
     end
