@@ -26,13 +26,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          bundler-cache: false
+          bundler-cache: true
           ruby-version: '3.2'
-
-      - name: Install dependencies
-        run: bundle install
-
-      - name: Remove Gemfile.lock
-        run: rm -vf Gemfile.lock
 
       - uses: rubygems/release-gem@v1
