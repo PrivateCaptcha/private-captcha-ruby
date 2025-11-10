@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    private_captcha (0.0.2)
+    private_captcha (0.0.3)
       rack (~> 2.0)
 
 GEM
