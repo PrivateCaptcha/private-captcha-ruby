@@ -38,7 +38,7 @@ end
 # Verify a captcha solution
 begin
   result = client.verify('user-solution-from-frontend')
-  if result.success
+  if result.ok?
     puts 'Captcha verified successfully!'
   else
     puts "Verification failed: #{result.error_message}"

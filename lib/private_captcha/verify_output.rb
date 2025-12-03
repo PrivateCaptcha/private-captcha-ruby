@@ -44,6 +44,10 @@ module PrivateCaptcha
       @attempt = attempt
     end
 
+    def ok?
+      @success == true && @code == VERIFY_NO_ERROR
+    end
+
     def error_message
       ERROR_MESSAGES.fetch(@code, 'error')
     end

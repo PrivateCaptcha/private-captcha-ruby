@@ -81,7 +81,7 @@ module PrivateCaptcha
 
       output = verify(solution)
 
-      unless output.success
+      unless output.ok?
         raise Error.new("captcha verification failed: #{output.error_message}",
                         trace_id: output.trace_id)
       end

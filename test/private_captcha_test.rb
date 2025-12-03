@@ -59,6 +59,7 @@ class PrivateCaptchaTest < Minitest::Test
     output = client.verify(payload)
 
     assert output.success
+    assert !output.ok?
     assert_equal PrivateCaptcha::VerifyOutput::TEST_PROPERTY_ERROR, output.code
   end
   # rubocop:enable Metrics/MethodLength
@@ -220,6 +221,7 @@ class PrivateCaptchaTest < Minitest::Test
 
     assert output.success
     assert_equal 0, output.code
+    assert output.ok?
     assert_equal 'example.com', output.origin
     assert_equal '2024-01-01T00:00:00Z', output.timestamp
     assert_equal 'test-123', output.trace_id
