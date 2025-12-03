@@ -25,7 +25,7 @@ module PrivateCaptcha
     end
 
     # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-    def verify(solution, max_backoff_seconds: nil, attempts: nil)
+    def verify(solution, max_backoff_seconds: nil, attempts: nil, sitekey: nil)
       raise EmptySolutionError if solution.nil? || solution.empty?
 
       max_backoff = max_backoff_seconds || @config.max_backoff_seconds
@@ -52,7 +52,7 @@ module PrivateCaptcha
         end
 
         begin
-          response = do_verify(solution)
+          response = do_verify(solution, sitekey: sitekey)
           error = nil
           break
         rescue RetriableError => e
@@ -100,11 +100,12 @@ module PrivateCaptcha
     end
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    def do_verify(solution)
+    def do_verify(solution, sitekey: nil)
       request = Net::HTTP::Post.new(@endpoint)
       request['X-Api-Key'] = @config.api_key
       request['User-Agent'] = "private-captcha-ruby/#{VERSION}"
       request['Content-Type'] = 'text/plain'
+      request['X-PC-Sitekey'] = sitekey if sitekey
       request.body = solution
 
       @logger.debug('Sending HTTP request') { "path=#{@endpoint.path} method=POST" }
