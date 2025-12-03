@@ -143,9 +143,13 @@ class PrivateCaptchaTest < Minitest::Test
     request.params[custom_field_name] = payload
 
     # Verify that VerifyRequest reads from the custom form field
-    output = client.verify_request(request)
+    # Since we're using test property, this will raise an error
+    error = assert_raises(PrivateCaptcha::Error) do
+      client.verify_request(request)
+    end
 
-    assert output.success
+    # Verify the error message contains the test property error
+    assert_match(/property-test/, error.message)
 
     # Also test that it doesn't work with the default field name
     env2 = {
