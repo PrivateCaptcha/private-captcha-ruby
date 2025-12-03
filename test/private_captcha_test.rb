@@ -61,7 +61,7 @@ class PrivateCaptchaTest < Minitest::Test
     output = client.verify(payload)
 
     assert output.success
-    assert refute(output.ok?)
+    assert refute_predicate(output, :ok?)
     assert_equal PrivateCaptcha::VerifyOutput::TEST_PROPERTY_ERROR, output.code
   end
 
