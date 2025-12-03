@@ -148,8 +148,8 @@ class PrivateCaptchaTest < Minitest::Test
       client.verify_request(request)
     end
 
-    # Verify the error message contains the test property error
-    assert_match(/property-test/, error.message)
+    # Verify the error message ends with the test property error suffix
+    assert error.message.end_with?('property-test')
 
     # Also test that it doesn't work with the default field name
     env2 = {
