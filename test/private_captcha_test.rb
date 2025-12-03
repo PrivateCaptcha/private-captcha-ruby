@@ -43,7 +43,12 @@ class PrivateCaptchaTest < Minitest::Test
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-  # rubocop:disable Metrics/MethodLength
+  def create_test_payload(puzzle)
+    empty_solutions_bytes = "\x00" * (SOLUTIONS_COUNT * SOLUTION_LENGTH)
+    solutions_str = Base64.strict_encode64(empty_solutions_bytes)
+    "#{solutions_str}.#{puzzle}"
+  end
+
   def test_stub_puzzle
     puzzle = fetch_test_puzzle
 
@@ -52,17 +57,13 @@ class PrivateCaptchaTest < Minitest::Test
       config.logger = @logger
     end
 
-    empty_solutions_bytes = "\x00" * (SOLUTIONS_COUNT * SOLUTION_LENGTH)
-    solutions_str = Base64.strict_encode64(empty_solutions_bytes)
-    payload = "#{solutions_str}.#{puzzle}"
-
+    payload = create_test_payload(puzzle)
     output = client.verify(payload)
 
     assert output.success
     assert refute(output.ok?)
     assert_equal PrivateCaptcha::VerifyOutput::TEST_PROPERTY_ERROR, output.code
   end
-  # rubocop:enable Metrics/MethodLength
 
   # rubocop:disable Metrics/MethodLength
   def test_verify_error
