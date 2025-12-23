@@ -15,7 +15,8 @@ module PrivateCaptcha
     MAINTENANCE_MODE_ERROR = 9
     TEST_PROPERTY_ERROR = 10
     INTEGRITY_ERROR = 11
-    VERIFY_CODES_COUNT = 12
+    ORG_SCOPE_ERROR = 12
+    VERIFY_CODES_COUNT = 13
 
     ERROR_MESSAGES = {
       VERIFY_NO_ERROR => '',
@@ -30,6 +31,7 @@ module PrivateCaptcha
       MAINTENANCE_MODE_ERROR => 'maintenance-mode',
       TEST_PROPERTY_ERROR => 'property-test',
       INTEGRITY_ERROR => 'integrity-error'
+      ORG_SCOPE_ERROR => 'org-scope-error'
     }.freeze
 
     attr_accessor :success, :code, :origin, :timestamp
