@@ -30,7 +30,7 @@ module PrivateCaptcha
       VERIFIED_BEFORE_ERROR => 'solution-verified-before',
       MAINTENANCE_MODE_ERROR => 'maintenance-mode',
       TEST_PROPERTY_ERROR => 'property-test',
-      INTEGRITY_ERROR => 'integrity-error'
+      INTEGRITY_ERROR => 'integrity-error',
       ORG_SCOPE_ERROR => 'org-scope-error'
     }.freeze
 
