@@ -18,7 +18,6 @@ class PrivateCaptchaTest < Minitest::Test
     @logger.level = Logger::DEBUG
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def fetch_test_puzzle
     self.class.test_puzzle_mutex.synchronize do
       return self.class.test_puzzle_data if self.class.test_puzzle_data
@@ -41,7 +40,6 @@ class PrivateCaptchaTest < Minitest::Test
       self.class.test_puzzle_data
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def create_test_payload(puzzle)
     empty_solutions_bytes = "\x00" * (SOLUTIONS_COUNT * SOLUTION_LENGTH)
@@ -65,7 +63,6 @@ class PrivateCaptchaTest < Minitest::Test
     assert_equal PrivateCaptcha::VerifyOutput::TEST_PROPERTY_ERROR, output.code
   end
 
-  # rubocop:disable Metrics/MethodLength
   def test_verify_error
     puzzle = fetch_test_puzzle
 
@@ -85,7 +82,6 @@ class PrivateCaptchaTest < Minitest::Test
 
     assert_equal 400, error.status_code
   end
-  # rubocop:enable Metrics/MethodLength
 
   def test_verify_empty_solution
     client = PrivateCaptcha::Client.new do |config|
@@ -100,7 +96,6 @@ class PrivateCaptchaTest < Minitest::Test
     assert_equal 'solution is empty', error.message
   end
 
-  # rubocop:disable Metrics/MethodLength
   def test_retry_backoff
     client = PrivateCaptcha::Client.new do |config|
       config.api_key = ENV.fetch('PC_API_KEY', nil)
@@ -117,9 +112,7 @@ class PrivateCaptchaTest < Minitest::Test
     # Should have failed after 4 attempts
     assert_equal 4, error.attempts
   end
-  # rubocop:enable Metrics/MethodLength
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def test_custom_form_field
     puzzle = fetch_test_puzzle
 
@@ -167,7 +160,6 @@ class PrivateCaptchaTest < Minitest::Test
 
     assert_equal 'solution is empty', error.message
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def test_empty_api_key
     error = assert_raises(PrivateCaptcha::EmptyAPIKeyError) do
@@ -179,7 +171,6 @@ class PrivateCaptchaTest < Minitest::Test
     assert_equal 'API key is empty', error.message
   end
 
-  # rubocop:disable Metrics/MethodLength
   def test_custom_failed_status_code
     # Create a simple app that should be protected by the middleware
     app = lambda do |_env|
@@ -202,7 +193,6 @@ class PrivateCaptchaTest < Minitest::Test
 
     assert_equal custom_status_code, status
   end
-  # rubocop:enable Metrics/MethodLength
 
   def test_verify_output_error_message
     output = PrivateCaptcha::VerifyOutput.new(
@@ -213,7 +203,6 @@ class PrivateCaptchaTest < Minitest::Test
     assert_equal 'solution-invalid', output.error_message
   end
 
-  # rubocop:disable Metrics/MethodLength
   def test_verify_output_from_json
     json_data = {
       'success' => true,
@@ -232,7 +221,6 @@ class PrivateCaptchaTest < Minitest::Test
     assert_equal 'test-123', output.trace_id
     assert_equal 2, output.attempt
   end
-  # rubocop:enable Metrics/MethodLength
 
   def test_configuration_defaults
     config = PrivateCaptcha::Configuration.new
