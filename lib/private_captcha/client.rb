@@ -75,11 +75,11 @@ module PrivateCaptcha
     end
     # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-    def verify_request(request, form_field: nil)
+    def verify_request(request, form_field: nil, sitekey: nil)
       field = form_field || @config.form_field
       solution = extract_form_value(request, field)
 
-      output = verify(solution)
+      output = verify(solution, sitekey: sitekey)
 
       unless output.ok?
         raise Error.new("captcha verification failed: #{output.error_message}",

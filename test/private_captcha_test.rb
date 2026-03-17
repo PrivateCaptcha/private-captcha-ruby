@@ -5,6 +5,7 @@ require_relative 'test_helper'
 class PrivateCaptchaTest < Minitest::Test
   SOLUTIONS_COUNT = 16
   SOLUTION_LENGTH = 8
+  TEST_SITEKEY = 'aaaaaaaabbbbccccddddeeeeeeeeeeee'
 
   @test_puzzle_data = nil
   @test_puzzle_mutex = Mutex.new
@@ -22,7 +23,7 @@ class PrivateCaptchaTest < Minitest::Test
     self.class.test_puzzle_mutex.synchronize do
       return self.class.test_puzzle_data if self.class.test_puzzle_data
 
-      uri = URI('https://api.privatecaptcha.com/puzzle?sitekey=aaaaaaaabbbbccccddddeeeeeeeeeeee')
+      uri = URI("https://api.privatecaptcha.com/puzzle?sitekey=#{TEST_SITEKEY}")
       request = Net::HTTP::Get.new(uri)
       request['Origin'] = 'not.empty'
 
@@ -56,7 +57,7 @@ class PrivateCaptchaTest < Minitest::Test
     end
 
     payload = create_test_payload(puzzle)
-    output = client.verify(payload)
+    output = client.verify(payload, sitekey: TEST_SITEKEY)
 
     assert output.success
     assert refute_predicate(output, :ok?)
@@ -77,7 +78,7 @@ class PrivateCaptchaTest < Minitest::Test
     payload = "#{solutions_str}.#{puzzle}"
 
     error = assert_raises(PrivateCaptcha::HTTPError) do
-      client.verify(payload)
+      client.verify(payload, sitekey: TEST_SITEKEY)
     end
 
     assert_equal 400, error.status_code
@@ -106,7 +107,7 @@ class PrivateCaptchaTest < Minitest::Test
     end
 
     error = assert_raises(PrivateCaptcha::VerificationFailedError) do
-      client.verify('asdf')
+      client.verify('asdf', sitekey: TEST_SITEKEY)
     end
 
     # Should have failed after 4 attempts
@@ -139,7 +140,7 @@ class PrivateCaptchaTest < Minitest::Test
     # Verify that VerifyRequest reads from the custom form field
     # Since we're using test property, this will raise an error
     error = assert_raises(PrivateCaptcha::Error) do
-      client.verify_request(request)
+      client.verify_request(request, sitekey: TEST_SITEKEY)
     end
 
     # Verify the error message ends with the test property error suffix
@@ -155,7 +156,7 @@ class PrivateCaptchaTest < Minitest::Test
 
     # This should fail because the client is configured to use the custom field
     error = assert_raises(PrivateCaptcha::EmptySolutionError) do
-      client.verify_request(default_request)
+      client.verify_request(default_request, sitekey: TEST_SITEKEY)
     end
 
     assert_equal 'solution is empty', error.message
