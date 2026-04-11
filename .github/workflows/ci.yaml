@@ -23,18 +23,22 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      with:
+        persist-credentials: false
 
     - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby@e65c17d16e57e481586a6a5a0282698790062f92 # v1.300.0
       with:
         ruby-version: '3.3'
-        bundler-cache: true
 
     - name: Run linter
       run: bundle exec rubocop
@@ -42,4 +46,4 @@ jobs:
     - name: Run unit tests
       run: bundle exec rake test
       env:
-        PC_API_KEY: ${{ secrets.PC_API_KEY }}
+        PC_API_KEY: ${{ secrets.PC_API_KEY }} # zizmor: ignore[secrets-outside-env]
