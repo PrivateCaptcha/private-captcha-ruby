@@ -16,7 +16,8 @@ module PrivateCaptcha
     TEST_PROPERTY_ERROR = 10
     INTEGRITY_ERROR = 11
     ORG_SCOPE_ERROR = 12
-    VERIFY_CODES_COUNT = 13
+    SOLUTION_TIMING_ERROR = 13
+    VERIFY_CODES_COUNT = 14
 
     ERROR_MESSAGES = {
       VERIFY_NO_ERROR => '',
@@ -31,17 +32,19 @@ module PrivateCaptcha
       MAINTENANCE_MODE_ERROR => 'maintenance-mode',
       TEST_PROPERTY_ERROR => 'property-test',
       INTEGRITY_ERROR => 'integrity-error',
-      ORG_SCOPE_ERROR => 'org-scope-error'
+      ORG_SCOPE_ERROR => 'org-scope-error',
+      SOLUTION_TIMING_ERROR => 'solution-timing'
     }.freeze
 
     attr_accessor :success, :code, :origin, :timestamp
     attr_reader :trace_id, :attempt
 
-    def initialize(success: false, code: VERIFY_NO_ERROR, origin: nil, timestamp: nil, trace_id: nil, attempt: 0)
+    def initialize(success: false, code: VERIFY_NO_ERROR, origin: nil, timestamp: nil, edge_token: nil, trace_id: nil, attempt: 0)
       @success = success
       @code = code
       @origin = origin
       @timestamp = timestamp
+      @edge_token = edge_token
       @trace_id = trace_id
       @attempt = attempt
     end
@@ -60,6 +63,7 @@ module PrivateCaptcha
         code: json_data['code'] || VERIFY_NO_ERROR,
         origin: json_data['origin'],
         timestamp: json_data['timestamp'],
+        edge_token: json_data['edge_token'],
         trace_id: trace_id,
         attempt: attempt
       )
