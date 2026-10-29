@@ -5,7 +5,7 @@ require 'rack'
 module PrivateCaptcha
   # Middleware provides Rack middleware for automatic captcha verification
   class Middleware
-    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable-next Metrics/AbcSize
     def initialize(app, api_key:, **options)
       @app = app
       @client = Client.new do |config|
@@ -18,9 +18,8 @@ module PrivateCaptcha
         config.logger = options[:logger] if options[:logger]
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable-next Metrics/MethodLength
     def call(env)
       request = Rack::Request.new(env)
 
@@ -36,6 +35,5 @@ module PrivateCaptcha
 
       @app.call(env)
     end
-    # rubocop:enable Metrics/MethodLength
   end
 end

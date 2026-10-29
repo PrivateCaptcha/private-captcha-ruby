@@ -39,7 +39,8 @@ module PrivateCaptcha
     attr_accessor :success, :code, :origin, :timestamp
     attr_reader :trace_id, :attempt
 
-    def initialize(success: false, code: VERIFY_NO_ERROR, origin: nil, timestamp: nil, edge_token: nil, trace_id: nil, attempt: 0)
+    def initialize(success: false, code: VERIFY_NO_ERROR, origin: nil, timestamp: nil, edge_token: nil,
+                   trace_id: nil, attempt: 0)
       @success = success
       @code = code
       @origin = origin

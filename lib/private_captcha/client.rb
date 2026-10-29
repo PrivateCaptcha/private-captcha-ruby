@@ -24,7 +24,7 @@ module PrivateCaptcha
       @logger = @config.logger || Logger.new(IO::NULL)
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
     def verify(solution, max_backoff_seconds: nil, attempts: nil, sitekey: nil)
       raise EmptySolutionError if solution.nil? || solution.empty?
 
@@ -73,7 +73,6 @@ module PrivateCaptcha
 
       response
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
     def verify_request(request, form_field: nil, sitekey: nil)
       field = form_field || @config.form_field
@@ -99,7 +98,7 @@ module PrivateCaptcha
       domain.delete_suffix('/')
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
     def do_verify(solution, sitekey: nil)
       request = Net::HTTP::Post.new(@endpoint)
       request['X-Api-Key'] = @config.api_key
@@ -149,7 +148,6 @@ module PrivateCaptcha
         raise RetriableError, e
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def parse_retry_after(header)
       return nil if header.nil? || header.empty?
